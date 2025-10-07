@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('encounters', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+         Schema::create('encounters', function (Illuminate\Database\Schema\Blueprint $table) {
+        $table->id();
+        $table->foreignId('patient_id')->constrained()->cascadeOnDelete(); // pregled pripada pacijentu
+        $table->foreignId('user_id')->constrained('users');                //pregled obavio (lekar/sestra)
+        $table->timestamp('occurred_at')->useCurrent();
+        $table->enum('type',['visit','telehealth','emergency'])->default('visit');
+        $table->text('notes')->nullable();
+        $table->enum('status',['open','closed'])->default('open');
+        $table->timestamps();
         });
     }
 

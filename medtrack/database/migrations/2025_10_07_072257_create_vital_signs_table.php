@@ -11,9 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vital_signs', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('vital_signs', function (Illuminate\Database\Schema\Blueprint $table) {
+        $table->id();
+        $table->foreignId('encounter_id')->constrained()->cascadeOnDelete();
+
+        $table->decimal('temperature',4,1)->nullable();
+        $table->unsignedSmallInteger('pulse')->nullable();
+        $table->unsignedSmallInteger('systolic')->nullable();
+        $table->unsignedSmallInteger('diastolic')->nullable();
+        $table->unsignedTinyInteger('respiration')->nullable();
+        $table->unsignedTinyInteger('saturation')->nullable();
+
+        $table->timestamps();
         });
     }
 
