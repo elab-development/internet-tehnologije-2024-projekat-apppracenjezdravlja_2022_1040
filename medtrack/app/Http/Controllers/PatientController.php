@@ -7,59 +7,62 @@ use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // GET /api/patients
     public function index()
     {
-        //
+        return response()->json(
+            Patient::withCount('encounters')->latest()->paginate(10)
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // POST /api/patients
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name'  => 'required|string|max:100',
+            'date_of_birth'        => 'nullable|date',
+            'gender'     => 'nullable|in:male,female',
+            'phone'      => 'nullable|string|max:100',
+            'address'    => 'nullable|string',
+            'email'      => 'nullable|email|max:255|unique:patients,email',
+            'user_id'    => 'nullable|exists:users,id',
+        ]);
+
+        $patient = Patient::create($data);
+        return response()->json($patient, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // GET /api/patients/{patient}
     public function show(Patient $patient)
     {
-        //
+        return response()->json(
+            $patient->load(['encounters.vitalSigns','user'])
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // PUT/PATCH /api/patients/{patient}
     public function update(Request $request, Patient $patient)
     {
-        //
+        $data = $request->validate([
+            'first_name' => 'sometimes|required|string|max:100',
+            'last_name'  => 'sometimes|required|string|max:100',
+            'date_of_birth'        => 'nullable|date',
+            'gender'     => 'nullable|in:male,female',
+            'phone'      => 'nullable|string|max:100',
+            'address'    => 'nullable|string',
+            'email'      => 'nullable|email|max:255|unique:patients,email,' . $patient->id,
+            'user_id'    => 'nullable|exists:users,id',
+        ]);
+
+        $patient->update($data);
+        return response()->json($patient);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // DELETE /api/patients/{patient}
     public function destroy(Patient $patient)
     {
-        //
+        $patient->delete();
+        return response()->noContent();
     }
 }

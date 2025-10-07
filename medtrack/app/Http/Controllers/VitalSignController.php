@@ -7,59 +7,58 @@ use Illuminate\Http\Request;
 
 class VitalSignController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // GET /api/encounters/{encounter}/vital-signs
+    public function index(Encounter $encounter)
     {
-        //
+        return response()->json(
+            $encounter->vitalSigns()->latest()->paginate(20)
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // POST /api/encounters/{encounter}/vital-signs
+    public function store(Request $request, Encounter $encounter)
     {
-        //
+        $data = $request->validate([
+            'temperature' => 'nullable|numeric',
+            'pulse'     => 'nullable|integer|min:0',
+            'systolic'      => 'nullable|integer|min:0',
+            'diastolic'     => 'nullable|integer|min:0',
+            'respiration'     => 'nullable|integer|min:0',
+            'saturation'          => 'nullable|integer|min:0|max:100',
+        ]);
+
+        $data['encounter_id'] = $encounter->id;
+
+        $vital = VitalSign::create($data);
+        return response()->json($vital, 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // GET /api/vital-signs/{vital_sign}
+    public function show(VitalSign $vital_sign)
     {
-        //
+        return response()->json($vital_sign->load('encounter.patient'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(VitalSign $vitalSign)
+    // PUT/PATCH /api/vital-signs/{vital_sign}
+    public function update(Request $request, VitalSign $vital_sign)
     {
-        //
+        $data = $request->validate([
+            'temperature' => 'nullable|numeric',
+            'pulse'     => 'nullable|integer|min:0',
+            'systolic'      => 'nullable|integer|min:0',
+            'diastolic'     => 'nullable|integer|min:0',
+            'respiration'     => 'nullable|integer|min:0',
+            'saturation'          => 'nullable|integer|min:0|max:100',
+        ]);
+
+        $vital_sign->update($data);
+        return response()->json($vital_sign->load('encounter.patient'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(VitalSign $vitalSign)
+    // DELETE /api/vital-signs/{vital_sign}
+    public function destroy(VitalSign $vital_sign)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, VitalSign $vitalSign)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(VitalSign $vitalSign)
-    {
-        //
+        $vital_sign->delete();
+        return response()->noContent();
     }
 }
