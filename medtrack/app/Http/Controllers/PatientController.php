@@ -65,4 +65,20 @@ class PatientController extends Controller
         $patient->delete();
         return response()->noContent();
     }
+
+    public function search(\Illuminate\Http\Request $request)
+{
+    $name = $request->query('name');
+
+    if (!$name) {
+        return response()->json(['message' => 'Query parameter "name" is required'], 422);
+    }
+
+    $items = \App\Models\Patient::where('first_name','like',"%{$name}%")
+        ->orWhere('last_name','like',"%{$name}%")
+        ->limit(20)
+        ->get();
+
+    return response()->json($items);
+}
 }

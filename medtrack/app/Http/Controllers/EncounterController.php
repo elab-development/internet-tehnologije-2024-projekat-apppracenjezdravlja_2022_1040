@@ -65,4 +65,16 @@ class EncounterController extends Controller
         $encounter->delete();
         return response()->noContent();
     }
+    public function dailyStats(\Illuminate\Http\Request $request)
+{
+    $days = (int)($request->query('days', 7));
+
+    $rows = \App\Models\Encounter::selectRaw('DATE(occurred_at) as day, COUNT(*) as total')
+        ->where('occurred_at', '>=', now()->subDays($days))
+        ->groupBy('day')
+        ->orderBy('day', 'asc')
+        ->get();
+
+    return response()->json($rows);
+}
 }
