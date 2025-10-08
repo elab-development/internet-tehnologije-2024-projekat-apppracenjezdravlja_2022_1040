@@ -69,8 +69,8 @@ class EncounterController extends Controller
 {
     $days = (int)($request->query('days', 7));
 
-    $rows = \App\Models\Encounter::selectRaw('DATE(occurred_at) as day, COUNT(*) as total')
-        ->where('occurred_at', '>=', now()->subDays($days))
+    $rows = \App\Models\Encounter::selectRaw('DATE(visit_time) as day, COUNT(*) as total')
+        ->where('visit_time', '>=', now()->subDays($days))
         ->groupBy('day')
         ->orderBy('day', 'asc')
         ->get();

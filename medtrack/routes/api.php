@@ -6,20 +6,20 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\EncounterController;
 use App\Http\Controllers\VitalSignController;
 
-// javne rute
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
-Route::get('/health', fn() => response()->json(['status' => 'ok']));
 
-// resursi (po potrebi premesti u protected grupu)
+
 Route::apiResource('patients', PatientController::class);
 Route::apiResource('patients.encounters', EncounterController::class)->shallow();
 Route::apiResource('encounters.vital-signs', VitalSignController::class)->shallow();
 
-// pretraga pacijenata
-Route::get('/patients/search', [PatientController::class, 'search']);
 
-// PROTECTED (Sanctum)
+Route::get('/patients/search', [PatientController::class, 'search']);
+Route::get('/health', fn() => response()->json(['status' => 'ok']));
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me',     [AuthController::class, 'me']);
     Route::post('/logout',[AuthController::class, 'logout']);
@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-// fallback (uvek poslednji, i obično VAN protected grupe)
+// fallback 
 Route::fallback(function () {
     return response()->json(['message' => 'Endpoint not found'], 404);
 });
