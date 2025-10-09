@@ -7,24 +7,24 @@ use App\Http\Controllers\EncounterController;
 use App\Http\Controllers\VitalSignController;
 
 
-// Health check i test rute
+// Health check i test 
 Route::get('health', fn() => response()->json(['status' => 'ok']));
 Route::get('test', fn() => response()->json(['message' => 'API radi']));
 
-// Auth (register/login) su javne
+// register i login
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
-// Patients — JAVNO: samo čitanje
+// Patients-read
 Route::get   ('/patients',           [PatientController::class, 'index']);
 Route::get   ('/patients/{patient}', [PatientController::class, 'show']);
 Route::get   ('/patients/search',    [PatientController::class, 'search']);
 
-// Encounters — JAVNO: čitanje pregleda nekog pacijenta
+// Encounters-read
 Route::get   ('/patients/{patient}/encounters', [EncounterController::class, 'index']);
-// Vital signs — JAVNO: čitanje za određeni pregled
+// VitalSigns-rad
 Route::get   ('/encounters/{encounter}/vital-signs', [VitalSignController::class, 'index']);
-// Statistika — JAVNO (primer)
+// Statistika
 Route::get   ('/stats/encounters/daily', [EncounterController::class, 'dailyStats']);
 
 
