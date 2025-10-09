@@ -6,25 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
-        Schema::table('patients', function (Illuminate\Database\Schema\Blueprint $table) {
-        $table->string('blood_type')->nullable();
-
-        });
+        if (Schema::hasColumn('patients', 'blood_type')) {
+            Schema::table('patients', function (Blueprint $table) {
+                $table->dropColumn('blood_type');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
+  
     public function down(): void
     {
-        Schema::table('patients', function (Illuminate\Database\Schema\Blueprint $table) {
-        $table->string('blood_type')->nullable();
-
-        });
+       if (!Schema::hasColumn('patients', 'blood_type')) {
+            Schema::table('patients', function (Blueprint $table) {
+                $table->string('blood_type')->nullable();
+            });
+        }
     }
 };
