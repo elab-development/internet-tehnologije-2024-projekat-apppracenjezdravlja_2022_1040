@@ -7,17 +7,25 @@ use App\Http\Controllers\EncounterController;
 use App\Http\Controllers\VitalSignController;
 
 
+// Health check i test rute
+Route::get('health', fn() => response()->json(['status' => 'ok']));
+Route::get('test', fn() => response()->json(['message' => 'API radi']));
+
+// Auth (register/login) su javne
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
+// Patients — JAVNO: samo čitanje
+Route::get   ('/patients',           [PatientController::class, 'index']);
+Route::get   ('/patients/{patient}', [PatientController::class, 'show']);
+Route::get   ('/patients/search',    [PatientController::class, 'search']);
 
-Route::apiResource('patients', PatientController::class);
-Route::apiResource('patients.encounters', EncounterController::class)->shallow();
-Route::apiResource('encounters.vital-signs', VitalSignController::class)->shallow();
-
-
-Route::get('/patients/search', [PatientController::class, 'search']);
-Route::get('/health', fn() => response()->json(['status' => 'ok']));
+// Encounters — JAVNO: čitanje pregleda nekog pacijenta
+Route::get   ('/patients/{patient}/encounters', [EncounterController::class, 'index']);
+// Vital signs — JAVNO: čitanje za određeni pregled
+Route::get   ('/encounters/{encounter}/vital-signs', [VitalSignController::class, 'index']);
+// Statistika — JAVNO (primer)
+Route::get   ('/stats/encounters/daily', [EncounterController::class, 'dailyStats']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -51,3 +59,4 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::fallback(function () {
     return response()->json(['message' => 'Endpoint not found'], 404);
 });
+
