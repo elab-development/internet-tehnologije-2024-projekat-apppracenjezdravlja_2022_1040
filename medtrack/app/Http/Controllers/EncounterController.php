@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Patient;
 use App\Models\Encounter;
 use Illuminate\Http\Request;
 
@@ -65,12 +66,12 @@ class EncounterController extends Controller
         $encounter->delete();
         return response()->noContent();
     }
-    public function dailyStats(\Illuminate\Http\Request $request)
+    public function dailyStats(Request $request)
 {
     $days = (int)($request->query('days', 7));
 
-    $rows = \App\Models\Encounter::selectRaw('DATE(visit_time) as day, COUNT(*) as total')
-        ->where('visit_time', '>=', now()->subDays($days))
+    $rows = Encounter::selectRaw('DATE(occurred_at) as day, COUNT(*) as total')
+        ->where('occurred_at', '>=', now()->subDays($days))
         ->groupBy('day')
         ->orderBy('day', 'asc')
         ->get();

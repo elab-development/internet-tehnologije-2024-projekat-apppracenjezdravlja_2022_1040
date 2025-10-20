@@ -6,20 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
-{
-    Schema::table('users', function (Illuminate\Database\Schema\Blueprint $table) {
-        $table->enum('role', ['doctor','nurse','admin','patient'])->default('patient');
-    });
-}
-public function down(): void
-{
-    Schema::table('users', function (Illuminate\Database\Schema\Blueprint $table) {
-        $table->dropColumn('role');
-    });
-}
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
 
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+    }
 };

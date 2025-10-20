@@ -18,7 +18,7 @@ Route::post('/login',    [AuthController::class, 'login']);
 // Patients-read
 Route::get   ('/patients',           [PatientController::class, 'index']);
 Route::get   ('/patients/{patient}', [PatientController::class, 'show']);
-Route::get   ('/patients/search',    [PatientController::class, 'search']);
+Route::get   ('/patients/search',    [PatientController::class, 'searchPatients']);
 
 // Encounters-read
 Route::get   ('/patients/{patient}/encounters', [EncounterController::class, 'index']);

@@ -66,7 +66,7 @@ class PatientController extends Controller
         return response()->noContent();
     }
 
-    public function search(\Illuminate\Http\Request $request)
+    public function searchPatients(Request $request)  // OBRISI Patient $patient parametar!
 {
     $name = $request->query('name');
 
@@ -74,11 +74,11 @@ class PatientController extends Controller
         return response()->json(['message' => 'Query parameter "name" is required'], 422);
     }
 
-    $items = \App\Models\Patient::where('first_name','like',"%{$name}%")
+    $patients = Patient::where('first_name','like',"%{$name}%")
         ->orWhere('last_name','like',"%{$name}%")
         ->limit(20)
         ->get();
 
-    return response()->json($items);
+    return response()->json($patients);
 }
 }
