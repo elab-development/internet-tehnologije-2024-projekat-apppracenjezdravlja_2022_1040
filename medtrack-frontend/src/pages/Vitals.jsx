@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 export default function Vitals() {
   const { id } = useParams(); // id posete
+  return (
     <div className="container center">
       <h1>Vitalni znaci</h1>
       <p>Encounter ID: {id}</p>
