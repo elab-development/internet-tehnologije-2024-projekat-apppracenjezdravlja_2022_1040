@@ -13,7 +13,7 @@ export default function Encounters() {
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
 
-  // Forma za KREIRANJE susreta
+  // Forma za KREIRANJE 
   const [visitTime, setVisitTime] = useState(""); // "2025-10-21T14:30"
   const [type, setType] = useState("");
   const [notes, setNotes] = useState("");
@@ -30,7 +30,7 @@ export default function Encounters() {
       const res = await api.get(`/patients/${id}/encounters`);
       setEncounters(norm(res.data));
     } catch (err) {
-      setErrMsg("Greška pri učitavanju susreta.");
+      setErrMsg("Greška pri učitavanju posete.");
     } finally {
       setLoading(false);
     }
@@ -38,10 +38,10 @@ export default function Encounters() {
 
   useEffect(() => {
     loadEncounters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [id]);
 
-  // helper: frontend value iz <input type="datetime-local"> pretvori u "Y-m-d H:i:s"
+ 
   function toSqlDateTime(v) {
     if (!v) return "";
     // "2025-10-21T14:30" -> "2025-10-21 14:30:00"
@@ -57,8 +57,10 @@ export default function Encounters() {
         type: (type || "").trim(),
         notes: (notes || "").trim(),
         status: (status || "").trim(),
-        // user_id: backend obično sam popuni iz auth korisnika; dodaj ako ti je potrebno
+        
       };
+      console.log("Create payload:", payload);
+
       await api.post(`/patients/${id}/encounters`, payload);
       // Očisti formu i osveži listu
       setVisitTime("");
@@ -66,28 +68,33 @@ export default function Encounters() {
       setNotes("");
       setStatus("");
       await loadEncounters();
-      alert("Susret je dodat.");
+      alert("poseta je dodata.");
     } catch (err) {
+ 
+  console.error("Create encounter error:", err?.response || err);
+
+  
   const data = err?.response?.data;
   const msg =
     data?.message ||
     (data?.errors && Object.values(data.errors).flat().join(" | ")) ||
-    "Greška pri kreiranju susreta.";
+    `Greška (${err?.response?.status || "?"}) pri kreiranju posete.`;
+
   setErrMsg(msg);
 }
   }
 
   if (loading) {
-    return <div className="container center"><p>Učitavanje susreta...</p></div>;
+    return <div className="container center"><p>Učitavanje poseta...</p></div>;
   }
 
   return (
     <div className="container center">
-      <h1>Susreti pacijenta #{id}</h1>
+      <h1>Posete pacijenta #{id}</h1>
 
-      {/* Forma za dodavanje susreta */}
+      {/* Forma za dodavanje */}
       <div className="card" style={{ maxWidth: 600, marginTop: 12, marginBottom: 12 }}>
-        <h3 style={{ marginTop: 0 }}>Novi susret</h3>
+        <h3 style={{ marginTop: 0 }}>Nova poseta</h3>
         <form onSubmit={handleCreate}>
           <div className="field">
             <label className="label">Vreme posete</label>
@@ -101,7 +108,7 @@ export default function Encounters() {
           </div>
 
           <div className="field">
-  <label className="label">Tip susreta</label>
+  <label className="label">Tip posete</label>
   <select
     className="input"
     value={type}
@@ -140,19 +147,19 @@ export default function Encounters() {
           </div>
 
           {errMsg && <p style={{ color: "#dc2626" }}>{errMsg}</p>}
-          <Button type="submit">Sačuvaj susret</Button>
+          <Button type="submit">Sačuvaj posetu</Button>
         </form>
       </div>
 
-      {/* Lista susreta */}
+      {/* Lista poseta */}
       {encounters.length === 0 ? (
-        <p>Nema evidentiranih susreta.</p>
+        <p>Nema evidentiranih poseta.</p>
       ) : (
         <div className="grid mt-12">
           {encounters.map((e) => (
             <Card
               key={e.id}
-              title={e.visit_time ? `Poseta: ${e.visit_time}` : `Susret #${e.id}`}
+              title={e.visit_time ? `Poseta: ${e.visit_time}` : `Poseta #${e.id}`}
               description={[
                 e.type ? `Tip: ${e.type}` : null,
                 e.status ? `Status: ${e.status}` : null,
