@@ -25,7 +25,7 @@ Route::get   ('/patients/{patient}/encounters', [EncounterController::class, 'in
 // VitalSigns-rad
 Route::get   ('/encounters/{encounter}/vital-signs', [VitalSignController::class, 'index']);
 // Statistika
-Route::get   ('/stats/encounters/daily', [EncounterController::class, 'dailyStats']);
+Route::get   ('stats/encounters/daily', [EncounterController::class, 'dailyStats']);
 
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -23,12 +23,11 @@ class EncounterController extends Controller
     // POST /api/patients/{patient}/encounters
     public function store(Request $request, Patient $patient)
 {
-    // Dozvoli ono što stvarno treba da dođe sa fronta
     $validated = $request->validate([
         'visit_time' => 'required|date', // frontend šalje "YYYY-MM-DD HH:mm:00"
-        'type'       => 'required|in:visit,telehealth,emergency', // vidi Napomenu ispod
+        'type'       => 'required|in:visit,telehealth,emergency', 
         'notes'      => 'nullable|string',
-        'status'     => 'required|in:open,closed', // vidi Napomenu ispod
+        'status'     => 'required|in:open,closed', 
     ]);
 
     $encounter = new Encounter();
@@ -76,8 +75,8 @@ class EncounterController extends Controller
 {
     $days = (int)($request->query('days', 7));
 
-    $rows = Encounter::selectRaw('DATE(occurred_at) as day, COUNT(*) as total')
-        ->where('occurred_at', '>=', now()->subDays($days))
+    $rows = \App\Models\Encounter::selectRaw('DATE(visit_time) as day, COUNT(*) as total')
+        ->where('visit_time', '>=', now()->subDays($days))
         ->groupBy('day')
         ->orderBy('day', 'asc')
         ->get();
