@@ -22,20 +22,26 @@ class EncounterController extends Controller
 
     // POST /api/patients/{patient}/encounters
     public function store(Request $request, Patient $patient)
-    {
-        $data = $request->validate([
-            'user_id'     => 'required|exists:users,id',        // lekar/sestra
-            'visit_time' => 'nullable|date',
-            'type'        => 'nullable|in:visit,telehealth,emergency',
-            'notes'       => 'nullable|string',
-            'status'      => 'nullable|in:open,closed',
-        ]);
+{
+    // Dozvoli ono što stvarno treba da dođe sa fronta
+    $validated = $request->validate([
+        'visit_time' => 'required|date', // frontend šalje "YYYY-MM-DD HH:mm:00"
+        'type'       => 'required|in:visit,telehealth,emergency', // vidi Napomenu ispod
+        'notes'      => 'nullable|string',
+        'status'     => 'required|in:open,closed', // vidi Napomenu ispod
+    ]);
 
-        $data['patient_id'] = $patient->id;
+    $encounter = new Encounter();
+    $encounter->patient_id = $patient->id;       // iz rute /patients/{patient}/encounters
+    $encounter->user_id    = $request->user()->id; // iz auth tokena
+    $encounter->visit_time = $validated['visit_time'];
+    $encounter->type       = $validated['type'];
+    $encounter->notes      = $validated['notes'] ?? null;
+    $encounter->status     = $validated['status'];
+    $encounter->save();
 
-        $encounter = Encounter::create($data);
-        return response()->json($encounter->load('clinician','patient'), 201);
-    }
+    return response()->json($encounter->load('clinician','patient'), 201);
+}
 
     // GET /api/encounters/{encounter}
     public function show(Encounter $encounter)

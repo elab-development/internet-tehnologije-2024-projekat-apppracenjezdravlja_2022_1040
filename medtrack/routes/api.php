@@ -12,8 +12,8 @@ Route::get('health', fn() => response()->json(['status' => 'ok']));
 Route::get('test', fn() => response()->json(['message' => 'API radi']));
 
 // register i login
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login',    [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login',    [AuthController::class, 'login']);
 
 // Patients-read
 Route::get   ('/patients',           [PatientController::class, 'index']);
