@@ -104,3 +104,7 @@ body {
 
 .mt-12 { margin-top: 12px; }
 .center { max-width: 960px; margin: 0 auto; }
+
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.table th { text-align: left; opacity: .9; }

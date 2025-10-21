@@ -13,7 +13,7 @@ export default function NavBar() {
         <Link className="nav-link" to="/">Home</Link>
         <Link className="nav-link" to="/patients">Patients</Link>
         <Link className="nav-link" to="/reports/daily">Reports</Link>
-        <Link className="nav-link" to="/health">Health</Link>
+       
       </div>
       <div className="nav-links">
         <HealthBadge />

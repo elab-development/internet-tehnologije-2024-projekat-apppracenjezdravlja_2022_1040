@@ -11,7 +11,6 @@ import PatientDetails from "./pages/PatientDetails";
 import Encounters from "./pages/Encounters";
 import Vitals from "./pages/Vitals";
 import ReportsDaily from "./pages/ReportsDaily";
-import HealthPage from "./pages/HealthPage";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -64,14 +63,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/health"
-          element={
-            <ProtectedRoute>
-              <HealthPage />
-            </ProtectedRoute>
-          }
-        />
+        
 
         {/* Fallback */}
         <Route path="*" element={<NotFound />} />
