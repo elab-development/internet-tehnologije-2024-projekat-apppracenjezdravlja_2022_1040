@@ -8,12 +8,22 @@ use Illuminate\Http\Request;
 class PatientController extends Controller
 {
     // GET /api/patients
-    public function index()
-    {
-        return response()->json(
-            Patient::withCount('encounters')->latest()->paginate(10)
-        );
+    public function index(Request $request)
+{
+    $user = $request->user();
+
+    if ($user->role === 'doctor') {
+        return response()->json(\App\Models\Patient::orderBy('last_name')->paginate(10));
     }
+
+    // patient
+    if ($user->patient_id) {
+        $one = \App\Models\Patient::where('id', $user->patient_id)->paginate(10);
+        return response()->json($one);
+    }
+
+    return response()->json([]); // nema mapiran patient
+}
 
     // POST /api/patients
     public function store(Request $request)
@@ -34,12 +44,16 @@ class PatientController extends Controller
     }
 
     // GET /api/patients/{patient}
-    public function show(Patient $patient)
-    {
-        return response()->json(
-            $patient->load(['encounters.vitalSigns','user'])
-        );
+    public function show(Request $request, \App\Models\Patient $patient)
+{
+    $user = $request->user();
+    if ($user->role === 'doctor') return response()->json($patient);
+
+    if ($user->patient_id !== $patient->id) {
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+    return response()->json($patient);
+}
 
     // PUT/PATCH /api/patients/{patient}
     public function update(Request $request, Patient $patient)
@@ -60,11 +74,15 @@ class PatientController extends Controller
     }
 
     // DELETE /api/patients/{patient}
-    public function destroy(Patient $patient)
-    {
-        $patient->delete();
-        return response()->noContent();
-    }
+   public function destroy(\Illuminate\Http\Request $request, \App\Models\Patient $patient)
+{
+    
+
+   
+    $patient->delete();
+
+    return response()->noContent(); // 204
+}
 
     public function searchPatients(Request $request)  // OBRISI Patient $patient parametar!
 {

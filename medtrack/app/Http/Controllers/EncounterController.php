@@ -10,15 +10,20 @@ class EncounterController extends Controller
 {
     
     // GET /api/patients/{patient}/encounters
-    public function index(Patient $patient)
-    {
-        $encounters = $patient->encounters()
-            ->with(['clinician','vitalSigns'])
-            ->latest('visit_time')
-            ->paginate(10);
-
-        return response()->json($encounters);
+    public function index(Request $request, \App\Models\Patient $patient)
+{
+    $user = $request->user();
+    if ($user->role !== 'doctor' && $user->patient_id !== $patient->id) {
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+
+    $encounters = $patient->encounters()
+        ->with(['clinician','vitalSigns'])
+        ->latest('visit_time')
+        ->paginate(10);
+
+    return response()->json($encounters);
+}
 
     // POST /api/patients/{patient}/encounters
     public function store(Request $request, Patient $patient)

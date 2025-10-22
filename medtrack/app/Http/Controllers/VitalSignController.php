@@ -9,13 +9,18 @@ use Illuminate\Http\Request;
 class VitalSignController extends Controller
 {
     // GET /api/encounters/{encounter}/vital-signs
-    public function index(Encounter $encounter)
-    {
-        
-        return response()->json(
-            $encounter->vitalSigns()->orderBy('created_at', 'desc')->paginate(20)
-        );
+    public function index(\App\Models\Encounter $encounter, \Illuminate\Http\Request $request)
+{
+    $user = $request->user();
+
+    if ($user->role !== 'doctor' && $user->patient_id !== $encounter->patient_id) {
+        return response()->json(['message' => 'Forbidden'], 403);
     }
+
+    return response()->json(
+        $encounter->vitalSigns()->orderBy('created_at', 'desc')->paginate(20)
+    );
+}
 
     // POST /api/encounters/{encounter}/vital-signs
     public function store(Request $request, Encounter $encounter)
