@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { api } from "../api";
 import Card from "../components/Card";
 import Button from "../components/Button";
+import { isDoctor } from "../auth";
 
 export default function Vitals() {
   const { id } = useParams(); // encounter id
@@ -86,6 +87,7 @@ export default function Vitals() {
       <h1>Vitalni znaci — Encounter #{id}</h1>
 
       {/* Forma */}
+      {isDoctor() && (
       <div className="card" style={{ maxWidth: 680, marginTop: 12, marginBottom: 12 }}>
         <h3 style={{ marginTop: 0 }}>Dodaj vitalne znakove</h3>
         <form onSubmit={handleCreate}>
@@ -120,6 +122,7 @@ export default function Vitals() {
           <Button type="submit" style={{ marginTop: 8 }}>Sačuvaj</Button>
         </form>
       </div>
+      )}
 
       {/* Lista */}
       {vitals.length === 0 ? (

@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { useNavigate } from "react-router-dom";
 import { api } from "../api"; 
+import { getRole, myPatientId } from "../auth";
+import { useNavigate } from "react-router-dom"; 
 
 export default function Patients() {
   const [q, setQ] = useState("");
@@ -40,12 +41,22 @@ export default function Patients() {
         list.filter((p) =>
           (`${p.first_name} ${p.last_name}`.toLowerCase().includes(s)) ||
           (p.gender || "").toLowerCase().includes(s) ||
-          (p.date_of_birth || "").toLowerCase().includes(s)
+          (p.dob|| "").toLowerCase().includes(s)
         )
       );
     }, 250);
     return () => clearTimeout(timer);
   }, [q, list]);
+
+  useEffect(() => {
+  // ako nije doktor, vodi ga direktno na sopstveni karton
+  if (getRole() !== "doctor") {
+    const pid = myPatientId();
+    if (pid) {
+      navigate(`/patients/${pid}`, { replace: true });
+    }
+  }
+}, [navigate]);
 
   if (loading) return <div className="container center">Učitavanje pacijenata...</div>;
 
@@ -69,7 +80,7 @@ export default function Patients() {
             <Card
               key={p.id}
               title={`${p.first_name} ${p.last_name}`}
-              description={`Pol: ${p.gender} • Rođen/a: ${p.date_of_birth}`}
+              description={`Pol: ${p.gender} • Rođen/a: ${p.dob}`}
             >
               <Button onClick={() => navigate(`/patients/${p.id}`)}>Detalji</Button>
             </Card>

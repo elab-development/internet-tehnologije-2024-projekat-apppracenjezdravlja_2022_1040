@@ -4,6 +4,7 @@ import { api } from "../api";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { isDoctor } from "../auth";
 
 export default function Encounters() {
   const { id } = useParams(); // ID pacijenta
@@ -93,6 +94,7 @@ export default function Encounters() {
       <h1>Posete pacijenta #{id}</h1>
 
       {/* Forma za dodavanje */}
+      {isDoctor() && (
       <div className="card" style={{ maxWidth: 600, marginTop: 12, marginBottom: 12 }}>
         <h3 style={{ marginTop: 0 }}>Nova poseta</h3>
         <form onSubmit={handleCreate}>
@@ -106,6 +108,7 @@ export default function Encounters() {
               required
             />
           </div>
+          
 
           <div className="field">
   <label className="label">Tip posete</label>
@@ -150,6 +153,7 @@ export default function Encounters() {
           <Button type="submit">Sačuvaj posetu</Button>
         </form>
       </div>
+      )}
 
       {/* Lista poseta */}
       {encounters.length === 0 ? (
