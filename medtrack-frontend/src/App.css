@@ -1,0 +1,110 @@
+:root {
+  --bg: #f7f7f9;
+  --fg: #1f2937;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --primary: #2563eb;
+}
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --fg: #e5e7eb;
+  --card-bg: #0f172a;
+  --border: #1f2937;
+  --muted: #9ca3af;
+  --primary: #60a5fa;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+/* Layout */
+.container { padding: 16px; }
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* NavBar */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+}
+.brand { font-weight: 700; }
+.nav-links { display: flex; gap: 8px; }
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.nav-link:hover { background: rgba(0,0,0,0.06); }
+[data-theme="dark"] .nav-link:hover { background: rgba(255,255,255,0.08); }
+
+/* Card */
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--card-bg);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.card h3 { margin: 0; }
+.card p { margin-top: 8px; color: var(--muted); }
+
+/* Button */
+.btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--fg);
+}
+.btn:hover { border-color: var(--primary); }
+
+/* Input */
+.field { display: grid; gap: 6px; margin-bottom: 12px; }
+.label { font-weight: 600; }
+.input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--fg);
+}
+
+/* Health badge */
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.badge.ok { color: #059669; border-color: #059669; }
+.badge.down { color: #dc2626; border-color: #dc2626; }
+
+
+.mt-12 { margin-top: 12px; }
+.center { max-width: 960px; margin: 0 auto; }
+
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.table th { text-align: left; opacity: .9; }
